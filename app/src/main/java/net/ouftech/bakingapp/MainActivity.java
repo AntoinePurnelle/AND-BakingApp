@@ -16,14 +16,102 @@
 
 package net.ouftech.bakingapp;
 
+import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+import net.ouftech.bakingapp.commons.BaseActivity;
+import net.ouftech.bakingapp.commons.CallException;
+import net.ouftech.bakingapp.commons.CollectionUtils;
+import net.ouftech.bakingapp.commons.Logger;
+import net.ouftech.bakingapp.commons.NetworkUtils;
+import net.ouftech.bakingapp.model.Recipe;
+
+import java.util.List;
+
+import butterknife.BindView;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class MainActivity extends BaseActivity {
+
+    @BindView(R.id.pb_loading_indicator)
+    protected ProgressBar loadingIndicator;
+    @BindView(R.id.tv_error_message_display)
+    protected TextView errorMessageDisplay;
+
+    private List<Recipe> recipes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        loadRecipes();
+    }
+
+    private void loadRecipes() {
+        if (!isRunning())
+            return;
+
+        setProgressBarVisibility(View.VISIBLE);
+
+        NetworkUtils.getRecipes(this, new Callback<List<Recipe>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Recipe>> call, @NonNull Response<List<Recipe>> response) {
+                recipes = response.body();
+
+                if (recipes == null) {
+                    ResponseBody errorBody = response.errorBody();
+                    CallException callException = new CallException(response.code(), response.message(), errorBody, call);
+
+                    if (errorBody == null)
+                        Logger.e(getLotTag(), "Error while executing getRecipes call", callException);
+                    else
+                        Logger.e(getLotTag(), String.format("Error while executing getRecipes call. ErrorBody = %s", errorBody), callException);
+
+                    showErrorMessage();
+                } else {
+                    if (CollectionUtils.isEmpty(recipes)) {
+                        Logger.e(getLotTag(), "Error while executing getRecipes call. Returned list is empty", new CallException(response.code(), response.message(), null, call));
+                        showErrorMessage();
+                    }
+                }
+
+                setProgressBarVisibility(View.GONE);
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<Recipe>> call, @NonNull Throwable t) {
+                Logger.e(getLotTag(), "Error while executing getRecipes call", t);
+                setProgressBarVisibility(View.GONE);
+                showErrorMessage();
+            }
+        });
+    }
+
+    private void setProgressBarVisibility(final int visibility) {
+        if (isRunning() && loadingIndicator != null)
+            runOnUiThread(() -> loadingIndicator.setVisibility(visibility));
+    }
+
+    private void showErrorMessage() {
+        errorMessageDisplay.setVisibility(View.VISIBLE);
+    }
+
+    @NonNull
+    @Override
+    protected String getLotTag() {
+        return "MainActivity";
+    }
+
+    @Override
+    @LayoutRes
+    protected int getLayoutId() {
+        return R.layout.activity_main;
     }
 }

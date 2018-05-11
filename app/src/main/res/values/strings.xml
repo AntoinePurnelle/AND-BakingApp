@@ -15,4 +15,5 @@
   -->
 <resources>
     <string name="app_name">BakingApp</string>
+    <string name="error_message">An error has occurred</string>
 </resources>

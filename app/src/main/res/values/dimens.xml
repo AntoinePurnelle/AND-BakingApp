@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <dimen name="subtitle_text_size">20sp</dimen>
+
+    <dimen name="loading_indicator_size">42dp</dimen>
+    <dimen name="default_padding">16dp</dimen>
+</resources>
