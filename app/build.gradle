@@ -1,0 +1,67 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 27
+    defaultConfig {
+        applicationId "net.ouftech.bakingapp"
+        minSdkVersion 16
+        targetSdkVersion 27
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    // region Android Support Library - https://developer.android.com/topic/libraries/support-library/revisions.html
+
+    implementation 'com.android.support:support-annotations:27.1.1'
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:cardview-v7:27.1.1'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
+    implementation 'com.android.support:recyclerview-v7:27.1.1'
+
+    // endregion Android Support Library
+
+    // region Testing Libs
+
+    /* JUnit - https://github.com/junit-team/junit4/releases */
+    testImplementation 'junit:junit:4.12'
+    /* Android JUnit Runner - https://google.github.io/android-testing-support-library/downloads/release-notes/ */
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    /* Android JUnit Runner - https://google.github.io/android-testing-support-library/downloads/release-notes/ */
+    androidTestImplementation 'com.android.support.test:rules:1.0.2'
+    /* Espresso - https://google.github.io/android-testing-support-library/downloads/release-notes/ */
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    // endregion Testing Libs
+
+    // region Other Libs
+
+    /* Butter Knife - View Binder - https://github.com/JakeWharton/butterknife/releases */
+    implementation 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    /* Firebase Core - https://firebase.google.com/support/release-notes/android#latest_sdk_versions */
+    implementation 'com.google.firebase:firebase-core:15.0.2'
+    /* Firebase Crashlytics - https://firebase.google.com/support/release-notes/android#latest_sdk_versions */
+    implementation('com.crashlytics.sdk.android:crashlytics:2.9.1@aar') { transitive = true }
+    /* FragmentArgs - Annotation Processor to create arguments for Fragments - https://github.com/sockeqwe/fragmentargs/releases */
+    implementation 'com.hannesdorfmann.fragmentargs:annotation:3.0.2'
+    annotationProcessor 'com.hannesdorfmann.fragmentargs:processor:3.0.2'
+    /* Retrofit - Type-safe HTTP client - https://github.com/square/retrofit/blob/master/CHANGELOG.md */
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
+
+    // endregion Other Libs
+}
