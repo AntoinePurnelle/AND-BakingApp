@@ -16,10 +16,14 @@
 
 package net.ouftech.bakingapp;
 
+import android.content.Intent;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -45,13 +49,20 @@ public class MainActivity extends BaseActivity {
     protected ProgressBar loadingIndicator;
     @BindView(R.id.tv_error_message_display)
     protected TextView errorMessageDisplay;
+    @BindView(R.id.recipes_rv)
+    protected RecyclerView recipesRV;
 
     private List<Recipe> recipes;
+    private RecipesAdapter recipesAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         loadRecipes();
+
+        recipesRV.setHasFixedSize(true);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, getResources().getInteger(R.integer.recycler_view_span_count));
+        recipesRV.setLayoutManager(layoutManager);
     }
 
     private void loadRecipes() {
@@ -83,6 +94,12 @@ public class MainActivity extends BaseActivity {
                 }
 
                 setProgressBarVisibility(View.GONE);
+
+                recipesAdapter = new RecipesAdapter(recipes, recipe -> {
+                    Intent intent = new Intent(MainActivity.this, StepListActivity.class);
+                    MainActivity.this.startActivity(intent);
+                });
+                recipesRV.setAdapter(recipesAdapter);
             }
 
             @Override

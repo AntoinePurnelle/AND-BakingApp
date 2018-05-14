@@ -1,4 +1,4 @@
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright 2018 Antoine PURNELLE
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,9 +13,12 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<resources>
-    <string name="app_name">BakingApp</string>
-    <string name="error_message">An error has occurred</string>
-    <string name="title_step_list">Steps</string>
-    <string name="title_step_detail">Step Detail</string>
-</resources>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/step_detail"
+    style="?android:attr/textAppearanceLarge"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:textIsSelectable="true"
+    tools:context=".StepDetailFragment" />

@@ -34,4 +34,8 @@ public class CollectionUtils {
     public static int getSize(Collection collection) {
         return collection == null ? 0 : collection.size();
     }
+
+    public static boolean contains(Collection collection, int position) {
+        return position >= 0 && position < getSize(collection);
+    }
 }

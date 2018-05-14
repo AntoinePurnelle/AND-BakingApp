@@ -24,7 +24,7 @@
         android:id="@+id/pb_loading_indicator"
         android:layout_width="@dimen/loading_indicator_size"
         android:layout_height="@dimen/loading_indicator_size"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -35,8 +35,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:drawableEnd="@drawable/ic_sentiment_very_dissatisfied_red_24dp"
-        android:drawablePadding="@dimen/default_padding"
         android:drawableRight="@drawable/ic_sentiment_very_dissatisfied_red_24dp"
+        android:drawablePadding="@dimen/default_padding"
         android:text="@string/error_message"
         android:textSize="@dimen/subtitle_text_size"
         android:visibility="gone"
@@ -44,5 +44,13 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recipes_rv"
+        android:scrollbars="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="net.ouftech.bakingapp.MainActivity"
+        tools:listitem="@layout/recipe_list_item" />
 
 </android.support.constraint.ConstraintLayout>

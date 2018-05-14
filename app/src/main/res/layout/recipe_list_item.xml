@@ -1,4 +1,4 @@
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright 2018 Antoine PURNELLE
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,9 +13,17 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<resources>
-    <string name="app_name">BakingApp</string>
-    <string name="error_message">An error has occurred</string>
-    <string name="title_step_list">Steps</string>
-    <string name="title_step_detail">Step Detail</string>
-</resources>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:layout_margin="25dp">
+
+    <TextView
+        android:id="@+id/recipe_item_title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Test"
+        android:layout_gravity="center"/>
+
+</android.support.v7.widget.CardView>

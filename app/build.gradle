@@ -53,6 +53,8 @@ dependencies {
     // region Testing Libs
 
     /* JUnit - https://github.com/junit-team/junit4/releases */
+    implementation 'com.android.support:support-v4:27.1.1'
+    implementation 'com.android.support:design:27.1.1'
     testImplementation 'junit:junit:4.12'
     /* Android JUnit Runner - https://google.github.io/android-testing-support-library/downloads/release-notes/ */
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

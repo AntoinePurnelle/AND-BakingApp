@@ -43,7 +43,7 @@ public class CallException extends Exception {
     private String message;
     private String url;
     @Nullable
-    private TMDBError tmdbError;
+    private String errorBodyString;
 
     public CallException(int code, String message, @Nullable ResponseBody errorBody, Call call) {
         this.code = code;
@@ -51,9 +51,9 @@ public class CallException extends Exception {
 
         try {
             if (errorBody != null)
-                tmdbError = new Gson().fromJson(errorBody.string(), TMDBError.class);
-        } catch (IOException | JsonSyntaxException e) {
-            Logger.w(getLotTag(), String.format("Cannot build TMDBError based on message %s", message), e, false);
+                errorBodyString = errorBody.string();
+        } catch (IOException e) {
+            Logger.w(getLotTag(), String.format("Cannot build errorBodyString based on errorBody %s", errorBody), e, false);
         }
 
         url = call.request().url().toString();
@@ -65,26 +65,7 @@ public class CallException extends Exception {
                 "\n  code= " + code +
                 ",\n  message= '" + message + '\'' +
                 ",\n  for url= '" + url + '\'' +
-                ",\n  tmdbError= " + tmdbError +
+                ",\n  errorBodyString= " + errorBodyString +
                 "\n }\n";
-    }
-
-    public class TMDBError {
-        public static final String STATUS_CODE = "status_code";
-        public static final String STATUS_MESSAGE = "status_message";
-
-        @SerializedName(STATUS_CODE)
-        public int statusCode;
-
-        @SerializedName(STATUS_MESSAGE)
-        public String statusMessage;
-
-        @Override
-        public String toString() {
-            return "\n   {" +
-                    "\n    statusCode= " + statusCode +
-                    ",\n    statusMessage='" + statusMessage + '\'' +
-                    "\n   }";
-        }
     }
 }
