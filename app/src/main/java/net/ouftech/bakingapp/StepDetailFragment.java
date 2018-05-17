@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package  net.ouftech.bakingapp;
+package net.ouftech.bakingapp;
 
 import android.app.Activity;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -26,6 +25,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import net.ouftech.bakingapp.dummy.DummyContent;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * A fragment representing a single Step detail screen.
@@ -39,6 +42,9 @@ public class StepDetailFragment extends Fragment {
      * represents.
      */
     public static final String ARG_ITEM_ID = "item_id";
+    @BindView(R.id.step_detail)
+    TextView stepDetail;
+    Unbinder unbinder;
 
     /**
      * The dummy content this fragment is presenting.
@@ -63,10 +69,8 @@ public class StepDetailFragment extends Fragment {
             mItem = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
 
             Activity activity = this.getActivity();
-            CollapsingToolbarLayout appBarLayout = activity.findViewById(R.id.toolbar_layout);
-            if (appBarLayout != null) {
-                appBarLayout.setTitle(mItem.content);
-            }
+            if (activity != null && activity.getActionBar() != null)
+                activity.getActionBar().setTitle(mItem.content);
         }
     }
 
@@ -74,12 +78,18 @@ public class StepDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.step_detail, container, false);
+        unbinder = ButterKnife.bind(this, rootView);
 
         // Show the dummy content as text in a TextView.
-        if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.step_detail)).setText(mItem.details);
-        }
+        if (mItem != null)
+            stepDetail.setText(mItem.details);
 
         return rootView;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 }

@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package  net.ouftech.bakingapp;
+package net.ouftech.bakingapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.support.v7.app.AppCompatActivity;
+import android.support.design.widget.AppBarLayout;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * An activity representing a single Step detail screen. This
@@ -34,16 +37,21 @@ import android.view.MenuItem;
  */
 public class StepDetailActivity extends AppCompatActivity {
 
+    @BindView(R.id.detail_toolbar)
+    Toolbar detailToolbar;
+    @BindView(R.id.app_bar)
+    AppBarLayout appBar;
+    @BindView(R.id.step_detail_container)
+    NestedScrollView stepDetailContainer;
+    Unbinder unbinder;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_step_detail);
-        Toolbar toolbar = findViewById(R.id.detail_toolbar);
-        setSupportActionBar(toolbar);
+        unbinder = ButterKnife.bind(this);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show());
+        setSupportActionBar(detailToolbar);
 
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
@@ -66,6 +74,7 @@ public class StepDetailActivity extends AppCompatActivity {
             Bundle arguments = new Bundle();
             arguments.putString(StepDetailFragment.ARG_ITEM_ID,
                     getIntent().getStringExtra(StepDetailFragment.ARG_ITEM_ID));
+
             StepDetailFragment fragment = new StepDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
@@ -88,5 +97,11 @@ public class StepDetailActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbinder.unbind();
     }
 }
