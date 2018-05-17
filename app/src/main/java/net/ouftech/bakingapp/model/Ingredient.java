@@ -40,6 +40,11 @@ public class Ingredient implements Parcelable {
     }
 
     @Override
+    public String toString() {
+        return String.format("%s: %s %s", name, quantity, measure);
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }

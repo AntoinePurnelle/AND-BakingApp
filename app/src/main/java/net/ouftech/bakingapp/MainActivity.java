@@ -97,6 +97,7 @@ public class MainActivity extends BaseActivity {
 
                 recipesAdapter = new RecipesAdapter(recipes, recipe -> {
                     Intent intent = new Intent(MainActivity.this, StepListActivity.class);
+                    intent.putExtra(StepListActivity.RECIPE_EXTRA_ID, recipe);
                     MainActivity.this.startActivity(intent);
                 });
                 recipesRV.setAdapter(recipesAdapter);
@@ -117,7 +118,8 @@ public class MainActivity extends BaseActivity {
     }
 
     private void showErrorMessage() {
-        errorMessageDisplay.setVisibility(View.VISIBLE);
+        if (errorMessageDisplay != null)
+            errorMessageDisplay.setVisibility(View.VISIBLE);
     }
 
     @NonNull

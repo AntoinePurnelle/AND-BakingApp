@@ -18,6 +18,7 @@ package net.ouftech.bakingapp.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -58,6 +59,13 @@ public class Recipe implements Parcelable {
             steps = null;
         }
         servings = in.readInt();
+    }
+
+    public String getIngredientsString() {
+        if (ingredients.size() == 1)
+            return ingredients.get(0).toString();
+
+        return "\u2022 " + TextUtils.join("\n\u2022 ", ingredients);
     }
 
     @Override

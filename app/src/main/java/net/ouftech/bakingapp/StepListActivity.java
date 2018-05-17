@@ -19,6 +19,8 @@ package net.ouftech.bakingapp;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -35,6 +37,8 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import net.ouftech.bakingapp.dummy.DummyContent;
+import net.ouftech.bakingapp.model.Recipe;
+import net.ouftech.bakingapp.model.Step;
 
 import java.util.List;
 
@@ -52,6 +56,8 @@ import butterknife.Unbinder;
  */
 public class StepListActivity extends AppCompatActivity {
 
+    public static final String RECIPE_EXTRA_ID = "recipe";
+
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.app_bar)
@@ -65,6 +71,7 @@ public class StepListActivity extends AppCompatActivity {
 
     private Unbinder unbinder;
     private boolean mTwoPane;
+    private Recipe recipe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +92,9 @@ public class StepListActivity extends AppCompatActivity {
             mTwoPane = true;
         }
 
-        stepListRV.setAdapter(new SimpleItemRecyclerViewAdapter(this, DummyContent.ITEMS, mTwoPane));
+        recipe = getIntent().getParcelableExtra(RECIPE_EXTRA_ID);
+
+        stepListRV.setAdapter(new SimpleItemRecyclerViewAdapter(this, recipe, mTwoPane));
     }
 
     @Override
@@ -115,8 +124,11 @@ public class StepListActivity extends AppCompatActivity {
     public static class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
+        private static final int INGREDIENTS_VIEW_TYPE = 0;
+        private static final int STEP_VIEW_TYPE = 1;
+
         private final StepListActivity mParentActivity;
-        private final List<DummyContent.DummyItem> mValues;
+        private final Recipe recipe;
         private final boolean mTwoPane;
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
@@ -141,42 +153,75 @@ public class StepListActivity extends AppCompatActivity {
         };
 
         SimpleItemRecyclerViewAdapter(StepListActivity parent,
-                                      List<DummyContent.DummyItem> items,
+                                      Recipe recipe,
                                       boolean twoPane) {
-            mValues = items;
+            this.recipe = recipe;
             mParentActivity = parent;
             mTwoPane = twoPane;
         }
 
+        @NonNull
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.step_list_content, parent, false);
-            return new ViewHolder(view);
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            if (viewType == INGREDIENTS_VIEW_TYPE)
+                return new IngredientsViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.step_list_ingredients, parent, false));
+            else
+                return new StepViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.step_list_content, parent, false));
         }
 
         @Override
-        public void onBindViewHolder(final ViewHolder holder, int position) {
-            holder.mIdView.setText(mValues.get(position).id);
-            holder.mContentView.setText(mValues.get(position).content);
+        public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+            holder.bind(recipe, position);
+        }
 
-            holder.itemView.setTag(mValues.get(position));
-            holder.itemView.setOnClickListener(mOnClickListener);
+        @Override
+        public int getItemViewType(int position) {
+            return position == 0 ? INGREDIENTS_VIEW_TYPE : STEP_VIEW_TYPE;
         }
 
         @Override
         public int getItemCount() {
-            return mValues.size();
+            return recipe.steps.size() + 1;
         }
 
-        class ViewHolder extends RecyclerView.ViewHolder {
-            final TextView mIdView;
-            final TextView mContentView;
-
+        abstract class ViewHolder extends RecyclerView.ViewHolder {
             ViewHolder(View view) {
                 super(view);
-                mIdView = view.findViewById(R.id.id_text);
-                mContentView = view.findViewById(R.id.content);
+                ButterKnife.bind(this, view);
+            }
+
+            protected abstract void bind(Recipe recipe, int position);
+        }
+
+        class StepViewHolder extends ViewHolder {
+            @BindView(R.id.step_number_tv)
+            TextView stepNumberTV;
+            @BindView(R.id.step_name_tv)
+            TextView stepNameTV;
+
+            StepViewHolder(View view) {
+                super(view);
+            }
+
+            @Override
+            protected void bind(Recipe recipe, int position) {
+                Step step = recipe.steps.get(position-1);
+                stepNumberTV.setText(String.valueOf(step.id+1));
+                stepNameTV.setText(step.shortDescription);
+            }
+        }
+
+        class IngredientsViewHolder extends ViewHolder {
+            @BindView(R.id.ingredients_tv)
+            TextView ingredientsTV;
+
+            IngredientsViewHolder(View view) {
+                super(view);
+            }
+
+            @Override
+            protected void bind(Recipe recipe, int position) {
+                ingredientsTV.setText(recipe.getIngredientsString());
             }
         }
     }
