@@ -16,14 +16,47 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="200dp"
+    android:layout_height="150dp"
     android:layout_margin="25dp">
 
     <TextView
         android:id="@+id/recipe_item_title_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="Test"
-        android:layout_gravity="center"/>
+        android:padding="@dimen/default_padding"
+        android:textColor="@color/primary_text_color"
+        android:textSize="@dimen/text_size_xxlarge"
+        tools:text="My own recipe" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:padding="@dimen/default_padding">
+
+        <TextView
+            android:id="@+id/servings_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_restaurant_menu_black_24dp"
+            android:drawableStart="@drawable/ic_restaurant_menu_black_24dp"
+            android:textColor="@color/secondary_text_color"
+            android:textSize="@dimen/text_size_large"
+            tools:text="2" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/steps_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/secondary_text_color"
+            android:textSize="@dimen/text_size_large"
+            tools:text="42 steps" />
+
+    </LinearLayout>
 
 </android.support.v7.widget.CardView>

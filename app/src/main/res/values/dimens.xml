@@ -2,7 +2,9 @@
 <resources>
 
 
-    <dimen name="subtitle_text_size">20sp</dimen>
+    <dimen name="text_size_xxlarge">28sp</dimen>
+    <dimen name="text_size_xlarge">24sp</dimen>
+    <dimen name="text_size_large">20sp</dimen>
 
     <dimen name="loading_indicator_size">42dp</dimen>
     <dimen name="default_padding">16dp</dimen>

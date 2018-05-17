@@ -20,6 +20,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import net.ouftech.bakingapp.commons.CollectionUtils;
 import net.ouftech.bakingapp.model.Recipe;
 
 import butterknife.BindView;
@@ -29,6 +30,10 @@ public class RecipeViewHolder extends RecyclerView.ViewHolder {
 
     @BindView(R.id.recipe_item_title_tv)
     protected TextView titleTV;
+    @BindView(R.id.steps_tv)
+    protected TextView stepsTV;
+    @BindView(R.id.servings_tv)
+    protected TextView servingsTV;
 
     private Recipe recipe;
 
@@ -39,6 +44,8 @@ public class RecipeViewHolder extends RecyclerView.ViewHolder {
 
     public void bind(Recipe recipe, RecipesAdapter.OnItemClickListener listener) {
         titleTV.setText(recipe.name);
+        stepsTV.setText(itemView.getContext().getResources().getQuantityString(R.plurals.steps, CollectionUtils.getSize(recipe.steps), CollectionUtils.getSize(recipe.steps)));
+        servingsTV.setText(String.valueOf(recipe.servings));
 
         if (listener != null)
             itemView.setOnClickListener(v -> listener.onItemClick(recipe));

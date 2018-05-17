@@ -18,4 +18,9 @@
     <string name="error_message">An error has occurred</string>
     <string name="title_step_list">Steps</string>
     <string name="title_step_detail">Step Detail</string>
+
+    <plurals name="steps">
+        <item quantity="one">%d step</item>
+        <item quantity="other">%d steps</item>
+    </plurals>
 </resources>

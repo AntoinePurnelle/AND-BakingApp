@@ -38,7 +38,7 @@
         android:drawableRight="@drawable/ic_sentiment_very_dissatisfied_red_24dp"
         android:drawablePadding="@dimen/default_padding"
         android:text="@string/error_message"
-        android:textSize="@dimen/subtitle_text_size"
+        android:textSize="@dimen/text_size_large"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
