@@ -36,6 +36,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import net.ouftech.bakingapp.commons.BaseActivity;
 import net.ouftech.bakingapp.dummy.DummyContent;
 import net.ouftech.bakingapp.model.Recipe;
 import net.ouftech.bakingapp.model.Step;
@@ -45,6 +46,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import icepick.State;
 
 /**
  * An activity representing a list of Steps. This activity
@@ -54,7 +56,7 @@ import butterknife.Unbinder;
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
  */
-public class StepListActivity extends AppCompatActivity {
+public class StepListActivity extends BaseActivity {
 
     public static final String RECIPE_EXTRA_ID = "recipe";
 
@@ -69,15 +71,25 @@ public class StepListActivity extends AppCompatActivity {
     @BindView(R.id.frameLayout)
     FrameLayout frameLayout;
 
-    private Unbinder unbinder;
-    private boolean mTwoPane;
-    private Recipe recipe;
+    @State
+    protected boolean mTwoPane;
+    @State
+    protected Recipe recipe;
+
+    @NonNull
+    @Override
+    protected String getLotTag() {
+        return "StepListActivity";
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_step_list;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_step_list);
-        unbinder = ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
@@ -113,12 +125,6 @@ public class StepListActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unbinder.unbind();
     }
 
     public static class SimpleItemRecyclerViewAdapter

@@ -18,12 +18,15 @@ package net.ouftech.bakingapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+
+import net.ouftech.bakingapp.commons.BaseActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,7 +38,7 @@ import butterknife.Unbinder;
  * item details are presented side-by-side with a list of items
  * in a {@link StepListActivity}.
  */
-public class StepDetailActivity extends AppCompatActivity {
+public class StepDetailActivity extends BaseActivity {
 
     @BindView(R.id.detail_toolbar)
     Toolbar detailToolbar;
@@ -43,13 +46,21 @@ public class StepDetailActivity extends AppCompatActivity {
     AppBarLayout appBar;
     @BindView(R.id.step_detail_container)
     NestedScrollView stepDetailContainer;
-    Unbinder unbinder;
+
+    @NonNull
+    @Override
+    protected String getLotTag() {
+        return "StepDetailActivity";
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_step_detail;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_step_detail);
-        unbinder = ButterKnife.bind(this);
 
         setSupportActionBar(detailToolbar);
 
@@ -97,11 +108,5 @@ public class StepDetailActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unbinder.unbind();
     }
 }

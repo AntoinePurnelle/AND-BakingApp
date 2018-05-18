@@ -18,12 +18,14 @@ package net.ouftech.bakingapp;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import net.ouftech.bakingapp.commons.BaseFragment;
 import net.ouftech.bakingapp.dummy.DummyContent;
 
 import butterknife.BindView;
@@ -36,7 +38,19 @@ import butterknife.Unbinder;
  * in two-pane mode (on tablets) or a {@link StepDetailActivity}
  * on handsets.
  */
-public class StepDetailFragment extends Fragment {
+public class StepDetailFragment extends BaseFragment {
+
+    @NonNull
+    @Override
+    protected String getLotTag() {
+        return "StepDetailFragment";
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.step_detail;
+    }
+
     /**
      * The fragment argument representing the item ID that this fragment
      * represents.
@@ -44,7 +58,6 @@ public class StepDetailFragment extends Fragment {
     public static final String ARG_ITEM_ID = "item_id";
     @BindView(R.id.step_detail)
     TextView stepDetail;
-    Unbinder unbinder;
 
     /**
      * The dummy content this fragment is presenting.
@@ -77,19 +90,12 @@ public class StepDetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.step_detail, container, false);
-        unbinder = ButterKnife.bind(this, rootView);
+        View rootView = super.onCreateView(inflater, container, savedInstanceState);
 
         // Show the dummy content as text in a TextView.
         if (mItem != null)
             stepDetail.setText(mItem.details);
 
         return rootView;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
     }
 }
