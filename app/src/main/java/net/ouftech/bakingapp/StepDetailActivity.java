@@ -83,8 +83,8 @@ public class StepDetailActivity extends BaseActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putString(StepDetailFragment.ARG_ITEM_ID,
-                    getIntent().getStringExtra(StepDetailFragment.ARG_ITEM_ID));
+            arguments.putParcelable(StepDetailFragment.ARG_ITEM,
+                    getIntent().getParcelableExtra(StepDetailFragment.ARG_ITEM));
 
             StepDetailFragment fragment = new StepDetailFragment();
             fragment.setArguments(arguments);

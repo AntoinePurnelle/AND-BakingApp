@@ -27,6 +27,7 @@ import android.widget.TextView;
 
 import net.ouftech.bakingapp.commons.BaseFragment;
 import net.ouftech.bakingapp.dummy.DummyContent;
+import net.ouftech.bakingapp.model.Step;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -55,14 +56,15 @@ public class StepDetailFragment extends BaseFragment {
      * The fragment argument representing the item ID that this fragment
      * represents.
      */
-    public static final String ARG_ITEM_ID = "item_id";
-    @BindView(R.id.step_detail)
+    public static final String ARG_ITEM = "item";
+
+    @BindView(R.id.step_details_description_tv)
     TextView stepDetail;
 
     /**
      * The dummy content this fragment is presenting.
      */
-    private DummyContent.DummyItem mItem;
+    private Step step;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -75,15 +77,15 @@ public class StepDetailFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments().containsKey(ARG_ITEM_ID)) {
+        if (getArguments().containsKey(ARG_ITEM)) {
             // Load the dummy content specified by the fragment
             // arguments. In a real-world scenario, use a Loader
             // to load content from a content provider.
-            mItem = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
+            step = getArguments().getParcelable(ARG_ITEM);
 
             Activity activity = this.getActivity();
             if (activity != null && activity.getActionBar() != null)
-                activity.getActionBar().setTitle(mItem.content);
+                activity.getActionBar().setTitle(step.shortDescription);
         }
     }
 
@@ -93,8 +95,8 @@ public class StepDetailFragment extends BaseFragment {
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
 
         // Show the dummy content as text in a TextView.
-        if (mItem != null)
-            stepDetail.setText(mItem.details);
+        if (step != null)
+            stepDetail.setText(step.description);
 
         return rootView;
     }

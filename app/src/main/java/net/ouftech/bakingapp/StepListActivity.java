@@ -136,27 +136,6 @@ public class StepListActivity extends BaseActivity {
         private final StepListActivity mParentActivity;
         private final Recipe recipe;
         private final boolean mTwoPane;
-        private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DummyContent.DummyItem item = (DummyContent.DummyItem) view.getTag();
-                if (mTwoPane) {
-                    Bundle arguments = new Bundle();
-                    arguments.putString(StepDetailFragment.ARG_ITEM_ID, item.id);
-                    StepDetailFragment fragment = new StepDetailFragment();
-                    fragment.setArguments(arguments);
-                    mParentActivity.getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.step_detail_container, fragment)
-                            .commit();
-                } else {
-                    Context context = view.getContext();
-                    Intent intent = new Intent(context, StepDetailActivity.class);
-                    intent.putExtra(StepDetailFragment.ARG_ITEM_ID, item.id);
-
-                    context.startActivity(intent);
-                }
-            }
-        };
 
         SimpleItemRecyclerViewAdapter(StepListActivity parent,
                                       Recipe recipe,
@@ -191,8 +170,11 @@ public class StepListActivity extends BaseActivity {
         }
 
         abstract class ViewHolder extends RecyclerView.ViewHolder {
+            protected View rootView;
+
             ViewHolder(View view) {
                 super(view);
+                rootView = view;
                 ButterKnife.bind(this, view);
             }
 
@@ -214,6 +196,24 @@ public class StepListActivity extends BaseActivity {
                 Step step = recipe.steps.get(position-1);
                 stepNumberTV.setText(String.valueOf(step.id+1));
                 stepNameTV.setText(step.shortDescription);
+
+                rootView.setOnClickListener(v -> {
+                    if (mTwoPane) {
+                        Bundle arguments = new Bundle();
+                        arguments.putParcelable(StepDetailFragment.ARG_ITEM, step);
+                        StepDetailFragment fragment = new StepDetailFragment();
+                        fragment.setArguments(arguments);
+                        mParentActivity.getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.step_detail_container, fragment)
+                                .commit();
+                    } else {
+                        Context context = rootView.getContext();
+                        Intent intent = new Intent(context, StepDetailActivity.class);
+                        intent.putExtra(StepDetailFragment.ARG_ITEM, step);
+
+                        context.startActivity(intent);
+                    }
+                });
             }
         }
 
