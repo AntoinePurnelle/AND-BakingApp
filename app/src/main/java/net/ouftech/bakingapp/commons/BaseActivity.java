@@ -27,6 +27,7 @@ import android.util.Log;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import icepick.Icepick;
 
 /**
  * Created by antoine.purnelle@ouftech.net on 25-02-18.
@@ -105,6 +106,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         logd(String.format("onCreate %s", this));
         super.onCreate(savedInstanceState);
 
+        Icepick.restoreInstanceState(this, savedInstanceState);
+
         setRunning(true);
         setContentView(getLayoutId());
         unbinder = ButterKnife.bind(this);
@@ -172,6 +175,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         logd(String.format("onSaveInstanceState %s", this));
         super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(this, outState);
     }
 
     @CallSuper
@@ -179,6 +183,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
         logd(String.format("onSaveInstanceState (PersistableBundle) %s", this));
         super.onSaveInstanceState(outState, outPersistentState);
+        Icepick.saveInstanceState(this, outState);
     }
 
     public boolean isRunning() {
