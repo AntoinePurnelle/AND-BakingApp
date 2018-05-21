@@ -84,10 +84,11 @@ public class StepDetailFragment extends BaseFragment {
     public static final String ARG_RECIPE = "recipe";
     public static final String ARG_STEP_NUMBER = "stepNumber";
 
-    @BindView(R.id.step_details_description_tv)
-    TextView descriptionTV;
     @BindView(R.id.step_details_player_view)
     SimpleExoPlayerView playerView;
+    @Nullable
+    @BindView(R.id.step_details_description_tv)
+    TextView descriptionTV;
     @Nullable
     @BindView(R.id.step_details_previous_button)
     AppCompatImageView previousButton;
@@ -139,7 +140,7 @@ public class StepDetailFragment extends BaseFragment {
     protected void initView() {
         Step step = getStep();
 
-        if (step != null)
+        if (step != null && descriptionTV != null)
             descriptionTV.setText(step.description);
 
         if (previousButton != null)
@@ -168,6 +169,8 @@ public class StepDetailFragment extends BaseFragment {
                 LoadControl loadControl = new DefaultLoadControl();
                 exoPlayer = ExoPlayerFactory.newSimpleInstance(getActivity(), trackSelector, loadControl);
                 playerView.setPlayer(exoPlayer);
+            } else {
+                exoPlayer.stop();
             }
 
             // Prepare the MediaSource.
