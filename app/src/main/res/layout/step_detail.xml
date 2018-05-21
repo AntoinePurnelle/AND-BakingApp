@@ -13,55 +13,50 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".StepDetailFragment"
-    android:fillViewport="true">
+    android:orientation="vertical"
+    tools:context=".StepDetailFragment">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <com.google.android.exoplayer2.ui.SimpleExoPlayerView
+        android:id="@+id/step_details_player_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/black"/>
 
-    <FrameLayout
+    <TextView
+        android:id="@+id/step_details_description_tv"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:background="@color/colorAccent" />
-        
-        <TextView
-            android:id="@+id/step_details_description_tv"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:textColor="@color/primary_text_color"
-            android:padding="@dimen/default_padding"
-            android:gravity="center"
-            tools:text="3. Press the cookie crumb mixture into the prepared pie pan and bake for 12 minutes. Let crust cool to room temperature."/>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:padding="@dimen/default_padding"
+        android:textColor="@color/primary_text_color"
+        tools:text="3. Press the cookie crumb mixture into the prepared pie pan and bake for 12 minutes. Let crust cool to room temperature." />
 
-        <LinearLayout
-            android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/step_details_previous_button"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_weight="1"
+            android:src="@drawable/ic_chevron_left_accent_24dp" />
 
-            <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/step_details_previous_button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@drawable/ic_chevron_left_accent_24dp"/>
-
-            <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/step_details_next_button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@drawable/ic_chevron_right_accent_24dp"/>
-
-        </LinearLayout>
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/step_details_next_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/ic_chevron_right_accent_24dp" />
 
     </LinearLayout>
 
-</ScrollView>
+</LinearLayout>

@@ -37,6 +37,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import net.ouftech.bakingapp.commons.BaseActivity;
+import net.ouftech.bakingapp.commons.CollectionUtils;
 import net.ouftech.bakingapp.dummy.DummyContent;
 import net.ouftech.bakingapp.model.Recipe;
 import net.ouftech.bakingapp.model.Step;
@@ -166,7 +167,10 @@ public class StepListActivity extends BaseActivity {
 
         @Override
         public int getItemCount() {
-            return recipe.steps.size() + 1;
+            if (recipe == null)
+                return 0;
+
+            return CollectionUtils.getSize(recipe.steps) + 1;
         }
 
         abstract class ViewHolder extends RecyclerView.ViewHolder {

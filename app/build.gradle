@@ -70,6 +70,8 @@ dependencies {
     /* Butter Knife - View Binder - https://github.com/JakeWharton/butterknife/releases */
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    /* ExoPlayer - Media Player - https://github.com/google/ExoPlayer/blob/release-v2/RELEASENOTES.md */
+    implementation 'com.google.android.exoplayer:exoplayer:2.8.0'
     /* Firebase Core - https://firebase.google.com/support/release-notes/android#latest_sdk_versions */
     implementation 'com.google.firebase:firebase-core:15.0.2'
     /* Firebase Crashlytics - https://firebase.google.com/support/release-notes/android#latest_sdk_versions */

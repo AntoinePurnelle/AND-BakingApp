@@ -17,21 +17,33 @@
 package net.ouftech.bakingapp;
 
 import android.app.Activity;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.LoadControl;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelector;
+import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
+
 import net.ouftech.bakingapp.commons.BaseFragment;
-import net.ouftech.bakingapp.dummy.DummyContent;
 import net.ouftech.bakingapp.model.Step;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 /**
  * A fragment representing a single Step detail screen.
@@ -59,7 +71,11 @@ public class StepDetailFragment extends BaseFragment {
     public static final String ARG_ITEM = "item";
 
     @BindView(R.id.step_details_description_tv)
-    TextView stepDetail;
+    TextView descriptionTV;
+    @BindView(R.id.step_details_player_view)
+    SimpleExoPlayerView playerView;
+
+    SimpleExoPlayer exoPlayer;
 
     /**
      * The dummy content this fragment is presenting.
@@ -96,8 +112,56 @@ public class StepDetailFragment extends BaseFragment {
 
         // Show the dummy content as text in a TextView.
         if (step != null)
-            stepDetail.setText(step.description);
+            descriptionTV.setText(step.description);
+
+        initializePlayer();
 
         return rootView;
+    }
+
+    private void initializePlayer() {
+        if (getActivity() == null)
+            return;
+
+        if (TextUtils.isEmpty(step.videoUrl)) {
+            playerView.setVisibility(View.GONE);
+        } else {
+            playerView.setVisibility(View.VISIBLE);
+
+            if (exoPlayer == null) {
+                // Create an instance of the ExoPlayer.
+                TrackSelector trackSelector = new DefaultTrackSelector();
+                LoadControl loadControl = new DefaultLoadControl();
+                exoPlayer = ExoPlayerFactory.newSimpleInstance(getActivity(), trackSelector, loadControl);
+                playerView.setPlayer(exoPlayer);
+
+                // Prepare the MediaSource.
+                String userAgent = Util.getUserAgent(getActivity(), "BakingApp");
+                MediaSource mediaSource = new ExtractorMediaSource(Uri.parse(step.videoUrl), new DefaultDataSourceFactory(
+                        getActivity(), userAgent), new DefaultExtractorsFactory(), null, null);
+                exoPlayer.prepare(mediaSource);
+                exoPlayer.setPlayWhenReady(true);
+            }
+        }
+    }
+
+    /**
+     * Release ExoPlayer.
+     */
+    private void releasePlayer() {
+        if (exoPlayer != null) {
+            exoPlayer.stop();
+            exoPlayer.release();
+            exoPlayer = null;
+        }
+    }
+
+    /**
+     * Release the player when the activity is destroyed.
+     */
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        releasePlayer();
     }
 }
