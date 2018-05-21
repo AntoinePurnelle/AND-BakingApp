@@ -198,22 +198,23 @@ public class StepListActivity extends BaseActivity {
             @Override
             protected void bind(Recipe recipe, int position) {
                 Step step = recipe.steps.get(position-1);
-                stepNumberTV.setText(String.valueOf(step.id+1));
+                stepNumberTV.setText(String.valueOf(step.id));
                 stepNameTV.setText(step.shortDescription);
 
                 rootView.setOnClickListener(v -> {
                     if (mTwoPane) {
-                        Bundle arguments = new Bundle();
-                        arguments.putParcelable(StepDetailFragment.ARG_ITEM, step);
-                        StepDetailFragment fragment = new StepDetailFragment();
-                        fragment.setArguments(arguments);
+                        StepDetailFragment fragment = StepDetailFragmentBuilder.newStepDetailFragment(
+                                recipe,
+                                position-1);
+
                         mParentActivity.getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.step_detail_container, fragment)
                                 .commit();
                     } else {
                         Context context = rootView.getContext();
                         Intent intent = new Intent(context, StepDetailActivity.class);
-                        intent.putExtra(StepDetailFragment.ARG_ITEM, step);
+                        intent.putExtra(StepDetailFragment.ARG_RECIPE, recipe);
+                        intent.putExtra(StepDetailFragment.ARG_STEP_NUMBER, position-1);
 
                         context.startActivity(intent);
                     }

@@ -39,6 +39,7 @@
         tools:text="3. Press the cookie crumb mixture into the prepared pie pan and bake for 12 minutes. Let crust cool to room temperature." />
 
     <LinearLayout
+        android:id="@+id/step_details_navigation_buttons_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
