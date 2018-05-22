@@ -17,22 +17,28 @@
 package net.ouftech.bakingapp;
 
 import android.content.Intent;
+import android.database.SQLException;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.crashlytics.android.Crashlytics;
+import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.sql.language.Select;
+import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
+import com.raizlabs.android.dbflow.structure.database.transaction.ITransaction;
 
 import net.ouftech.bakingapp.commons.BaseActivity;
 import net.ouftech.bakingapp.commons.CallException;
 import net.ouftech.bakingapp.commons.CollectionUtils;
 import net.ouftech.bakingapp.commons.Logger;
 import net.ouftech.bakingapp.commons.NetworkUtils;
+import net.ouftech.bakingapp.model.BakingAppDatabase;
 import net.ouftech.bakingapp.model.Recipe;
 
 import java.util.List;
@@ -71,6 +77,17 @@ public class MainActivity extends BaseActivity {
 
         setProgressBarVisibility(View.VISIBLE);
 
+        recipes = new Select()
+                .from(Recipe.class)
+                .queryList();
+
+        if (CollectionUtils.isEmpty(recipes))
+            loadRecipesFromNetwork();
+        else
+            displayRecipes();
+    }
+
+    private void loadRecipesFromNetwork() {
         NetworkUtils.getRecipes(this, new Callback<List<Recipe>>() {
             @Override
             public void onResponse(@NonNull Call<List<Recipe>> call, @NonNull Response<List<Recipe>> response) {
@@ -93,14 +110,8 @@ public class MainActivity extends BaseActivity {
                     }
                 }
 
-                setProgressBarVisibility(View.GONE);
-
-                recipesAdapter = new RecipesAdapter(recipes, recipe -> {
-                    Intent intent = new Intent(MainActivity.this, StepListActivity.class);
-                    intent.putExtra(StepListActivity.RECIPE_EXTRA_ID, recipe);
-                    MainActivity.this.startActivity(intent);
-                });
-                recipesRV.setAdapter(recipesAdapter);
+                saveRecipes();
+                displayRecipes();
             }
 
             @Override
@@ -110,6 +121,29 @@ public class MainActivity extends BaseActivity {
                 showErrorMessage();
             }
         });
+    }
+
+    private void saveRecipes() {
+        FlowManager.getDatabase(BakingAppDatabase.class).executeTransaction(databaseWrapper -> {
+            for (Recipe recipe : recipes) {
+                recipe.initWithChildren();
+                if (!recipe.save())
+                    Logger.e(getLotTag(), new SQLException(String.format("Error while inserting %s", recipe)));
+                else
+                    Logger.d(getLotTag(), String.format("Saved %s", recipe));
+            }
+        });
+    }
+
+    private void displayRecipes() {
+        setProgressBarVisibility(View.GONE);
+
+        recipesAdapter = new RecipesAdapter(recipes, recipe -> {
+            Intent intent = new Intent(MainActivity.this, StepListActivity.class);
+            intent.putExtra(StepListActivity.RECIPE_EXTRA_ID, recipe);
+            MainActivity.this.startActivity(intent);
+        });
+        recipesRV.setAdapter(recipesAdapter);
     }
 
     private void setProgressBarVisibility(final int visibility) {

@@ -19,14 +19,11 @@ package net.ouftech.bakingapp;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.CallSuper;
-import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -38,15 +35,11 @@ import android.widget.TextView;
 
 import net.ouftech.bakingapp.commons.BaseActivity;
 import net.ouftech.bakingapp.commons.CollectionUtils;
-import net.ouftech.bakingapp.dummy.DummyContent;
 import net.ouftech.bakingapp.model.Recipe;
 import net.ouftech.bakingapp.model.Step;
 
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import icepick.State;
 
 /**
@@ -198,7 +191,7 @@ public class StepListActivity extends BaseActivity {
             @Override
             protected void bind(Recipe recipe, int position) {
                 Step step = recipe.steps.get(position-1);
-                stepNumberTV.setText(String.valueOf(step.id));
+                stepNumberTV.setText(String.valueOf(step.stepId));
                 stepNameTV.setText(step.shortDescription);
 
                 rootView.setOnClickListener(v -> {

@@ -19,6 +19,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".BakingApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -50,6 +51,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="net.ouftech.bakingapp.StepListActivity" />
         </activity>
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="0fb56fe06f33133715ba31d96efb67c79c12aec7" />
+
     </application>
 
 </manifest>

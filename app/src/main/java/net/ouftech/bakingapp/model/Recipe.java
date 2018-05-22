@@ -21,27 +21,77 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 
 import com.google.gson.annotations.SerializedName;
+import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.OneToMany;
+import com.raizlabs.android.dbflow.annotation.PrimaryKey;
+import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
+import com.raizlabs.android.dbflow.structure.BaseModel;
+
+import net.ouftech.bakingapp.commons.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Recipe implements Parcelable {
+@Table(database = BakingAppDatabase.class)
+public class Recipe extends BaseModel implements Parcelable {
     public static final String ID_KEY = "id";
     public static final String NAME_KEY = "name";
     public static final String INGREDIENTS_KEY = "ingredients";
     public static final String STEPS_KEY = "steps";
     public static final String SERVINGS_KEY = "servings";
 
+    @PrimaryKey
     @SerializedName(ID_KEY)
     public int id;
+    @Column
     @SerializedName(NAME_KEY)
     public String name;
-    @SerializedName(INGREDIENTS_KEY)
-    public List<Ingredient> ingredients;
-    @SerializedName(STEPS_KEY)
-    public List<Step> steps;
+    @Column
     @SerializedName(SERVINGS_KEY)
     public int servings;
+
+    @SerializedName(INGREDIENTS_KEY)
+    public List<Ingredient> ingredients;
+
+    @OneToMany(methods = {OneToMany.Method.ALL}, variableName = "ingredients")
+    public List<Ingredient> getIngredients() {
+        if (CollectionUtils.isEmpty(ingredients)) {
+            ingredients = SQLite.select()
+                    .from(Ingredient.class)
+                    .where(Ingredient_Table.recipe_id.eq(id))
+                    .queryList();
+        }
+        return ingredients;
+    }
+
+    @SerializedName(STEPS_KEY)
+    public List<Step> steps;
+
+    @OneToMany(methods = {OneToMany.Method.ALL}, variableName = "steps")
+    public List<Step> getSteps() {
+        if (CollectionUtils.isEmpty(steps)) {
+            steps = SQLite.select()
+                    .from(Step.class)
+                    .where(Step_Table.recipe_id.eq(id))
+                    .queryList();
+        }
+        return steps;
+    }
+
+    public Recipe() {
+    }
+
+    public void initWithChildren() {
+
+        for (Ingredient ingredient : ingredients) {
+            ingredient.recipe = this;
+        }
+
+        for (Step step : steps) {
+            step.recipe = this;
+        }
+    }
 
     protected Recipe(Parcel in) {
         id = in.readInt();
