@@ -25,8 +25,6 @@ import com.raizlabs.android.dbflow.annotation.ForeignKey;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 
-import java.util.UUID;
-
 @Table(database = BakingAppDatabase.class)
 public class Ingredient implements Parcelable {
     public static final String QUANTITY_KEY = "quantity";

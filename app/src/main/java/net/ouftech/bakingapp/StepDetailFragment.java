@@ -28,9 +28,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayerFactory;
-import com.google.android.exoplayer2.LoadControl;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
@@ -160,17 +158,19 @@ public class StepDetailFragment extends BaseFragment {
 
         if (TextUtils.isEmpty(step.videoUrl)) {
             playerView.setVisibility(View.GONE);
+
+            if (exoPlayer != null) {
+                exoPlayer.stop();
+                exoPlayer.release();
+            }
         } else {
             playerView.setVisibility(View.VISIBLE);
 
             if (exoPlayer == null) {
                 // Create an instance of the ExoPlayer.
                 TrackSelector trackSelector = new DefaultTrackSelector();
-                LoadControl loadControl = new DefaultLoadControl();
-                exoPlayer = ExoPlayerFactory.newSimpleInstance(getActivity(), trackSelector, loadControl);
+                exoPlayer = ExoPlayerFactory.newSimpleInstance(getActivity(), trackSelector);
                 playerView.setPlayer(exoPlayer);
-            } else {
-                exoPlayer.stop();
             }
 
             // Prepare the MediaSource.
