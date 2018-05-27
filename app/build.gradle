@@ -1,3 +1,12 @@
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.25.4'
+    }
+}
 /*
  * Copyright 2018 Antoine PURNELLE
  *
@@ -15,6 +24,14 @@
  */
 
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
+apply plugin: 'com.google.firebase.firebase-perf'
+
+
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
+
 
 android {
     compileSdkVersion 27
@@ -62,6 +79,14 @@ dependencies {
     androidTestImplementation 'com.android.support.test:rules:1.0.2'
     /* Espresso - https://google.github.io/android-testing-support-library/downloads/release-notes/ */
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    implementation 'com.google.firebase:firebase-appindexing:15.0.1'
+    implementation 'com.android.support.test.espresso:espresso-idling-resource:3.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-contrib:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+        exclude group: 'com.android.support', module: 'support-v4'
+        exclude group: 'com.android.support', module: 'design'
+        exclude group: 'com.android.support', module: 'recyclerview-v7'
+    }
 
     // endregion Testing Libs
 
@@ -70,12 +95,15 @@ dependencies {
     /* Butter Knife - View Binder - https://github.com/JakeWharton/butterknife/releases */
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    annotationProcessor 'com.github.Raizlabs.DBFlow:dbflow-processor:4.2.4'
+    implementation "com.github.Raizlabs.DBFlow:dbflow-core:4.2.4"
+    implementation "com.github.Raizlabs.DBFlow:dbflow:4.2.4"
     /* ExoPlayer - Media Player - https://github.com/google/ExoPlayer/blob/release-v2/RELEASENOTES.md */
     implementation 'com.google.android.exoplayer:exoplayer:2.8.0'
     /* Firebase Core - https://firebase.google.com/support/release-notes/android#latest_sdk_versions */
-    implementation 'com.google.firebase:firebase-core:15.0.2'
-    /* Firebase Crashlytics - https://firebase.google.com/support/release-notes/android#latest_sdk_versions */
+    implementation 'com.google.firebase:firebase-core:16.0.0'
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.1@aar') { transitive = true }
+    implementation 'com.google.firebase:firebase-perf:15.2.0'
     /* FragmentArgs - Annotation Processor to create arguments for Fragments - https://github.com/sockeqwe/fragmentargs/releases */
     implementation 'com.hannesdorfmann.fragmentargs:annotation:3.0.2'
     annotationProcessor 'com.hannesdorfmann.fragmentargs:processor:3.0.2'
@@ -89,3 +117,5 @@ dependencies {
 
     // endregion Other Libs
 }
+
+apply plugin: 'com.google.gms.google-services'

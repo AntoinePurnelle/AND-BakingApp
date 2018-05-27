@@ -18,19 +18,29 @@ package net.ouftech.bakingapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.database.SQLException;
+import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
+import android.support.test.espresso.IdlingResource;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.sql.language.Select;
+
+import net.ouftech.bakingapp.IdlingResource.SimpleIdlingResource;
 import net.ouftech.bakingapp.commons.BaseActivity;
 import net.ouftech.bakingapp.commons.CallException;
 import net.ouftech.bakingapp.commons.CollectionUtils;
 import net.ouftech.bakingapp.commons.Logger;
 import net.ouftech.bakingapp.commons.NetworkUtils;
+import net.ouftech.bakingapp.model.BakingAppDatabase;
 import net.ouftech.bakingapp.model.Recipe;
 
 import java.util.List;
@@ -53,9 +63,14 @@ public class MainActivity extends BaseActivity {
     private List<Recipe> recipes;
     private RecipesAdapter recipesAdapter;
 
+    @Nullable
+    private SimpleIdlingResource idlingResource;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getIdlingResource();
+        idlingResource.setIdleState(false);
         loadRecipes();
 
         recipesRV.setHasFixedSize(true);
@@ -69,6 +84,17 @@ public class MainActivity extends BaseActivity {
 
         setProgressBarVisibility(View.VISIBLE);
 
+        recipes = new Select()
+                .from(Recipe.class)
+                .queryList();
+
+        if (CollectionUtils.isEmpty(recipes))
+            loadRecipesFromNetwork();
+        else
+            displayRecipes();
+    }
+
+    private void loadRecipesFromNetwork() {
         NetworkUtils.getRecipes(this, new Callback<List<Recipe>>() {
             @Override
             public void onResponse(@NonNull Call<List<Recipe>> call, @NonNull Response<List<Recipe>> response) {
@@ -91,12 +117,8 @@ public class MainActivity extends BaseActivity {
                     }
                 }
 
-                setProgressBarVisibility(View.GONE);
-
-                recipesAdapter = new RecipesAdapter(recipes, recipe -> {
-                    onRecipeClick(recipe);
-                });
-                recipesRV.setAdapter(recipesAdapter);
+                saveRecipes();
+                displayRecipes();
             }
 
             @Override
@@ -106,6 +128,26 @@ public class MainActivity extends BaseActivity {
                 showErrorMessage();
             }
         });
+    }
+
+    private void saveRecipes() {
+        FlowManager.getDatabase(BakingAppDatabase.class).executeTransaction(databaseWrapper -> {
+            for (Recipe recipe : recipes) {
+                recipe.initWithChildren();
+                if (!recipe.save())
+                    Logger.e(getLotTag(), new SQLException(String.format("Error while inserting %s", recipe)));
+                else
+                    Logger.d(getLotTag(), String.format("Saved %s", recipe));
+            }
+        });
+    }
+
+    private void displayRecipes() {
+        setProgressBarVisibility(View.GONE);
+
+        recipesAdapter = new RecipesAdapter(recipes, this::onRecipeClick);
+        recipesRV.setAdapter(recipesAdapter);
+        idlingResource.setIdleState(true);
     }
 
     protected void onRecipeClick(Recipe recipe) {
@@ -135,4 +177,14 @@ public class MainActivity extends BaseActivity {
     protected int getLayoutId() {
         return R.layout.activity_main;
     }
+
+    @VisibleForTesting
+    @NonNull
+    public IdlingResource getIdlingResource() {
+        if (idlingResource == null) {
+            idlingResource = new SimpleIdlingResource();
+        }
+        return idlingResource;
+    }
+
 }

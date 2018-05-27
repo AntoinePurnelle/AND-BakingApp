@@ -96,8 +96,7 @@ public class Logger {
      * @param msg      Message to log
      */
     private static void logToCrashlytics(int priority, @NonNull String tag, @NonNull String msg) {
-        if (Fabric.isInitialized())
-            Crashlytics.log(priority, tag, msg);
+        Crashlytics.log(priority, tag, msg);
     }
 
     /**
@@ -106,7 +105,6 @@ public class Logger {
      * @param tr Exception to reportToCrashlytics
      */
     private static void reportToCrashlytics(@NonNull Throwable tr) {
-        if (Fabric.isInitialized())
-            Crashlytics.logException(tr);
+        Crashlytics.logException(tr);
     }
 }

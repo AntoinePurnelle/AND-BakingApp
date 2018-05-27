@@ -20,24 +20,42 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
+import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ForeignKey;
+import com.raizlabs.android.dbflow.annotation.PrimaryKey;
+import com.raizlabs.android.dbflow.annotation.Table;
 
+@Table(database = BakingAppDatabase.class)
 public class Step implements Parcelable {
     public static final String ID_KEY = "id";
     public static final String SHORT_DESCRIPTION_KEY = "shortDescription";
     public static final String DESCRIPTION_KEY = "description";
     public static final String VIDEO_URL_KEY = "videoURL";
 
+
+    @PrimaryKey(autoincrement = true)
+    int _id;
     @SerializedName(ID_KEY)
-    public int id;
+    @Column
+    public int stepId;
+    @Column
     @SerializedName(SHORT_DESCRIPTION_KEY)
     public String shortDescription;
+    @Column
     @SerializedName(DESCRIPTION_KEY)
     public String description;
+    @Column
     @SerializedName(VIDEO_URL_KEY)
     public String videoUrl;
 
+    @ForeignKey(stubbedRelationship = true)
+    public Recipe recipe;
+
+    public Step() {
+    }
+
     protected Step(Parcel in) {
-        id = in.readInt();
+        stepId = in.readInt();
         shortDescription = in.readString();
         description = in.readString();
         videoUrl = in.readString();
@@ -50,7 +68,7 @@ public class Step implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
+        dest.writeInt(stepId);
         dest.writeString(shortDescription);
         dest.writeString(description);
         dest.writeString(videoUrl);

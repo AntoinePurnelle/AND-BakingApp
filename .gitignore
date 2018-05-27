@@ -79,5 +79,3 @@ fastlane/readme.md
 app/src/*/res/values/secrets.xml
 app/fabric.properties
 app/libs/
-app/src/androidTest/
-app/src/test/

@@ -191,7 +191,7 @@ public class StepListActivity extends BaseActivity {
             @Override
             protected void bind(Recipe recipe, int position) {
                 Step step = recipe.steps.get(position-1);
-                stepNumberTV.setText(String.valueOf(step.id));
+                stepNumberTV.setText(String.valueOf(step.stepId));
                 stepNameTV.setText(step.shortDescription);
 
                 rootView.setOnClickListener(v -> {

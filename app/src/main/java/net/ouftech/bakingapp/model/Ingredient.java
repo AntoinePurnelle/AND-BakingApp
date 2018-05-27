@@ -20,18 +20,37 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
+import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ForeignKey;
+import com.raizlabs.android.dbflow.annotation.PrimaryKey;
+import com.raizlabs.android.dbflow.annotation.Table;
 
+import java.util.UUID;
+
+@Table(database = BakingAppDatabase.class)
 public class Ingredient implements Parcelable {
     public static final String QUANTITY_KEY = "quantity";
     public static final String MEASURE_KEY = "measure";
     public static final String NAME_KEY = "ingredient";
 
+
+    @PrimaryKey(autoincrement = true)
+    int id;
+    @Column
     @SerializedName(NAME_KEY)
     public String name;
+    @Column
     @SerializedName(QUANTITY_KEY)
     public float quantity;
+    @Column
     @SerializedName(MEASURE_KEY)
     public String measure;
+
+    @ForeignKey(stubbedRelationship = true)
+    public Recipe recipe;
+
+    public Ingredient() {
+    }
 
     protected Ingredient(Parcel in) {
         name = in.readString();
