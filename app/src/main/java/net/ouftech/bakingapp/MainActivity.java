@@ -17,12 +17,10 @@
 package net.ouftech.bakingapp;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -96,9 +94,7 @@ public class MainActivity extends BaseActivity {
                 setProgressBarVisibility(View.GONE);
 
                 recipesAdapter = new RecipesAdapter(recipes, recipe -> {
-                    Intent intent = new Intent(MainActivity.this, StepListActivity.class);
-                    intent.putExtra(StepListActivity.RECIPE_EXTRA_ID, recipe);
-                    MainActivity.this.startActivity(intent);
+                    onRecipeClick(recipe);
                 });
                 recipesRV.setAdapter(recipesAdapter);
             }
@@ -110,6 +106,12 @@ public class MainActivity extends BaseActivity {
                 showErrorMessage();
             }
         });
+    }
+
+    protected void onRecipeClick(Recipe recipe) {
+        Intent intent = new Intent(MainActivity.this, StepListActivity.class);
+        intent.putExtra(StepListActivity.RECIPE_EXTRA_ID, recipe);
+        MainActivity.this.startActivity(intent);
     }
 
     private void setProgressBarVisibility(final int visibility) {

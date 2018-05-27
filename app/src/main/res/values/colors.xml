@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright 2018 Antoine PURNELLE
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,6 +20,7 @@
     <color name="colorAccent">#1565c0</color>
 
     <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
 
     <color name="primary_text_color">#90000000</color>
     <color name="secondary_text_color">#60000000</color>

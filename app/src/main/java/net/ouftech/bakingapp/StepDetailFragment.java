@@ -53,7 +53,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Optional;
 import butterknife.Unbinder;
-import icepick.State;
 
 /**
  * A fragment representing a single Step detail screen.
@@ -153,10 +152,11 @@ public class StepDetailFragment extends BaseFragment {
     }
 
     private void initializePlayer() {
-        if (getActivity() == null)
-            return;
 
         Step step = getStep();
+
+        if (getActivity() == null || step == null)
+            return;
 
         if (TextUtils.isEmpty(step.videoUrl)) {
             playerView.setVisibility(View.GONE);
@@ -227,7 +227,8 @@ public class StepDetailFragment extends BaseFragment {
             return;
 
         stepNumber--;
-        getArguments().putInt(ARG_STEP_NUMBER, stepNumber);
+        if (getArguments() != null)
+            getArguments().putInt(ARG_STEP_NUMBER, stepNumber);
         initView();
     }
 
@@ -238,7 +239,8 @@ public class StepDetailFragment extends BaseFragment {
             return;
 
         stepNumber++;
-        getArguments().putInt(ARG_STEP_NUMBER, stepNumber);
+        if (getArguments() != null)
+            getArguments().putInt(ARG_STEP_NUMBER, stepNumber);
         initView();
     }
 }

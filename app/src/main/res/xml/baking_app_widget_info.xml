@@ -13,21 +13,15 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:orientation="horizontal">
-
-    <TextView
-        android:id="@+id/ingredients_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:textAppearance="?attr/textAppearanceListItem"
-        android:textColor="@color/secondary_text_color"
-        android:textSize="@dimen/text_size_normal"
-        tools:text="Test\nTest Test\nTest Test\nTest Test\nTest Test\nTest " />
-
-</LinearLayout>
+    android:configure="net.ouftech.bakingapp.BakingAppWidgetConfigureActivity"
+    android:initialKeyguardLayout="@layout/step_list_ingredients"
+    android:initialLayout="@layout/step_list_ingredients"
+    android:minHeight="110dp"
+    android:minWidth="110dp"
+    android:previewImage="@mipmap/ic_launcher"
+    android:resizeMode="horizontal|vertical"
+    android:updatePeriodMillis="86400000"
+    android:widgetCategory="home_screen"
+    tools:ignore="UnusedAttribute" />
