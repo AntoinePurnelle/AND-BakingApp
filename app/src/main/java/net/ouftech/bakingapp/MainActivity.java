@@ -18,21 +18,22 @@ package net.ouftech.bakingapp;
 
 import android.content.Intent;
 import android.database.SQLException;
+import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
-import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
+import android.support.test.espresso.IdlingResource;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.crashlytics.android.Crashlytics;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.Select;
-import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
-import com.raizlabs.android.dbflow.structure.database.transaction.ITransaction;
 
+import net.ouftech.bakingapp.IdlingResource.SimpleIdlingResource;
 import net.ouftech.bakingapp.commons.BaseActivity;
 import net.ouftech.bakingapp.commons.CallException;
 import net.ouftech.bakingapp.commons.CollectionUtils;
@@ -61,9 +62,14 @@ public class MainActivity extends BaseActivity {
     private List<Recipe> recipes;
     private RecipesAdapter recipesAdapter;
 
+    @Nullable
+    private SimpleIdlingResource idlingResource;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getIdlingResource();
+        idlingResource.setIdleState(false);
         loadRecipes();
 
         recipesRV.setHasFixedSize(true);
@@ -144,6 +150,7 @@ public class MainActivity extends BaseActivity {
             MainActivity.this.startActivity(intent);
         });
         recipesRV.setAdapter(recipesAdapter);
+        idlingResource.setIdleState(true);
     }
 
     private void setProgressBarVisibility(final int visibility) {
@@ -167,4 +174,14 @@ public class MainActivity extends BaseActivity {
     protected int getLayoutId() {
         return R.layout.activity_main;
     }
+
+    @VisibleForTesting
+    @NonNull
+    public IdlingResource getIdlingResource() {
+        if (idlingResource == null) {
+            idlingResource = new SimpleIdlingResource();
+        }
+        return idlingResource;
+    }
+
 }
