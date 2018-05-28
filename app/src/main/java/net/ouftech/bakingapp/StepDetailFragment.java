@@ -79,7 +79,7 @@ public class StepDetailFragment extends BaseFragment {
 
     @NonNull
     @Override
-    protected String getLotTag() {
+    protected String getLogTag() {
         return "StepDetailFragment";
     }
 
@@ -237,30 +237,22 @@ public class StepDetailFragment extends BaseFragment {
             imageView.setVisibility(View.GONE);
         } else {
             imageView.setVisibility(View.VISIBLE);
-            URL url;
-            try {
-                url = new URL(step.thumbnailUrl);
-                String imageURL = url.toString();
-                requestManager
-                        .load(imageURL)
-                        .listener(new RequestListener<Drawable>() {
-                            @Override
-                            public boolean onLoadFailed(@Nullable GlideException e, Object model,
-                                                        Target<Drawable> target, boolean isFirstResource) {
-                                return false;
-                            }
+            requestManager
+                    .load(step.thumbnailUrl)
+                    .listener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model,
+                                                    Target<Drawable> target, boolean isFirstResource) {
+                            return false;
+                        }
 
-                            @Override
-                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable>
-                                    target, DataSource dataSource, boolean isFirstResource) {
-                                return false;
-                            }
-                        })
-                        .into(imageView);
-            } catch (MalformedURLException e) {
-                Logger.w(getLotTag(), "Error while parsing URL", e);
-                imageView.setVisibility(View.GONE);
-            }
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable>
+                                target, DataSource dataSource, boolean isFirstResource) {
+                            return false;
+                        }
+                    })
+                    .into(imageView);
         }
     }
 

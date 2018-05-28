@@ -51,7 +51,7 @@ public class StepDetailActivity extends BaseActivity {
 
     @NonNull
     @Override
-    protected String getLotTag() {
+    protected String getLogTag() {
         return "StepDetailActivity";
     }
 

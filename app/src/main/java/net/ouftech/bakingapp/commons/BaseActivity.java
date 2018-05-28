@@ -41,7 +41,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     // region Crashlytics
 
     @NonNull
-    protected abstract String getLotTag();
+    protected abstract String getLogTag();
 
     /**
      * Logs a message to the logcat in the {@link Log#DEBUG} channel
@@ -49,7 +49,7 @@ public abstract class BaseActivity extends AppCompatActivity {
      * @param msg Message to log
      */
     protected void logd(@NonNull String msg) {
-        Logger.d(getLotTag(), msg);
+        Logger.d(getLogTag(), msg);
     }
 
     /**
@@ -59,7 +59,7 @@ public abstract class BaseActivity extends AppCompatActivity {
      * @param tr  Exception to be reported
      */
     public void logw(@NonNull String msg, @NonNull Throwable tr) {
-        Logger.w(getLotTag(), msg, tr, true);
+        Logger.w(getLogTag(), msg, tr, true);
     }
 
     /**
@@ -70,7 +70,7 @@ public abstract class BaseActivity extends AppCompatActivity {
      * @param report if true, the exception will be reported to Crashlytics
      */
     public void logw(@NonNull String msg, @NonNull Throwable tr, boolean report) {
-        Logger.w(getLotTag(), msg, tr, report);
+        Logger.w(getLogTag(), msg, tr, report);
     }
 
     /**
@@ -79,7 +79,7 @@ public abstract class BaseActivity extends AppCompatActivity {
      * @param tr  Exception to be reported
      */
     public void loge(@NonNull Throwable tr) {
-        Logger.e(getLotTag(), tr);
+        Logger.e(getLogTag(), tr);
     }
 
     /**
@@ -89,7 +89,7 @@ public abstract class BaseActivity extends AppCompatActivity {
      * @param tr  Exception to be reported
      */
     public void loge(@NonNull String msg, @NonNull Throwable tr) {
-        Logger.e(getLotTag(), msg, tr);
+        Logger.e(getLogTag(), msg, tr);
     }
 
     // endregion Crashlytics

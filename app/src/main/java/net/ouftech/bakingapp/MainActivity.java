@@ -19,7 +19,6 @@ package net.ouftech.bakingapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.database.SQLException;
-import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -105,14 +104,14 @@ public class MainActivity extends BaseActivity {
                     CallException callException = new CallException(response.code(), response.message(), errorBody, call);
 
                     if (errorBody == null)
-                        Logger.e(getLotTag(), "Error while executing getRecipes call", callException);
+                        Logger.e(getLogTag(), "Error while executing getRecipes call", callException);
                     else
-                        Logger.e(getLotTag(), String.format("Error while executing getRecipes call. ErrorBody = %s", errorBody), callException);
+                        Logger.e(getLogTag(), String.format("Error while executing getRecipes call. ErrorBody = %s", errorBody), callException);
 
                     showErrorMessage();
                 } else {
                     if (CollectionUtils.isEmpty(recipes)) {
-                        Logger.e(getLotTag(), "Error while executing getRecipes call. Returned list is empty", new CallException(response.code(), response.message(), null, call));
+                        Logger.e(getLogTag(), "Error while executing getRecipes call. Returned list is empty", new CallException(response.code(), response.message(), null, call));
                         showErrorMessage();
                     }
                 }
@@ -123,7 +122,7 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public void onFailure(@NonNull Call<List<Recipe>> call, @NonNull Throwable t) {
-                Logger.e(getLotTag(), "Error while executing getRecipes call", t);
+                Logger.e(getLogTag(), "Error while executing getRecipes call", t);
                 setProgressBarVisibility(View.GONE);
                 showErrorMessage();
             }
@@ -135,9 +134,9 @@ public class MainActivity extends BaseActivity {
             for (Recipe recipe : recipes) {
                 recipe.initWithChildren();
                 if (!recipe.save())
-                    Logger.e(getLotTag(), new SQLException(String.format("Error while inserting %s", recipe)));
+                    Logger.e(getLogTag(), new SQLException(String.format("Error while inserting %s", recipe)));
                 else
-                    Logger.d(getLotTag(), String.format("Saved %s", recipe));
+                    Logger.d(getLogTag(), String.format("Saved %s", recipe));
             }
         });
     }
@@ -168,7 +167,7 @@ public class MainActivity extends BaseActivity {
 
     @NonNull
     @Override
-    protected String getLotTag() {
+    protected String getLogTag() {
         return "MainActivity";
     }
 

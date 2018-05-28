@@ -40,6 +40,7 @@ public class Recipe extends BaseModel implements Parcelable {
     public static final String INGREDIENTS_KEY = "ingredients";
     public static final String STEPS_KEY = "steps";
     public static final String SERVINGS_KEY = "servings";
+    public static final String THUMBNAIL_URL_KEY = "image";
 
     @PrimaryKey
     @SerializedName(ID_KEY)
@@ -50,6 +51,9 @@ public class Recipe extends BaseModel implements Parcelable {
     @Column
     @SerializedName(SERVINGS_KEY)
     public int servings;
+    @Column
+    @SerializedName(THUMBNAIL_URL_KEY)
+    public String thumbnailUrl;
 
     @SerializedName(INGREDIENTS_KEY)
     public List<Ingredient> ingredients;
@@ -109,6 +113,7 @@ public class Recipe extends BaseModel implements Parcelable {
             steps = null;
         }
         servings = in.readInt();
+        thumbnailUrl = in.readString();
     }
 
     public String getIngredientsString() {
@@ -140,6 +145,7 @@ public class Recipe extends BaseModel implements Parcelable {
             dest.writeList(steps);
         }
         dest.writeInt(servings);
+        dest.writeString(thumbnailUrl);
     }
 
     @SuppressWarnings("unused")

@@ -108,7 +108,7 @@ public class BakingAppWidgetConfigureActivity extends MainActivity {
 
     @NonNull
     @Override
-    protected String getLotTag() {
+    protected String getLogTag() {
         return "BakingAppWidgetConfigureActivity";
     }
 }

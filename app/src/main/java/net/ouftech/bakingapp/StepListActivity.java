@@ -72,7 +72,7 @@ public class StepListActivity extends BaseActivity {
 
     @NonNull
     @Override
-    protected String getLotTag() {
+    protected String getLogTag() {
         return "StepListActivity";
     }
 

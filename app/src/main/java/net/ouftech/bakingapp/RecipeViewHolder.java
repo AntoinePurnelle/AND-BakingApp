@@ -14,14 +14,30 @@
  * limitations under the License.
  */
 
-package  net.ouftech.bakingapp;
+package net.ouftech.bakingapp;
 
+import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
+
 import net.ouftech.bakingapp.commons.CollectionUtils;
+import net.ouftech.bakingapp.commons.Logger;
 import net.ouftech.bakingapp.model.Recipe;
+import net.ouftech.bakingapp.model.Step;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,12 +50,17 @@ public class RecipeViewHolder extends RecyclerView.ViewHolder {
     protected TextView stepsTV;
     @BindView(R.id.servings_tv)
     protected TextView servingsTV;
+    @Nullable
+    @BindView(R.id.recipe_image_view)
+    AppCompatImageView imageView;
 
-    private Recipe recipe;
+    private RequestManager requestManager;
 
     public RecipeViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
+
+        this.requestManager = Glide.with(itemView.getContext());
     }
 
     public void bind(Recipe recipe, RecipesAdapter.OnItemClickListener listener) {
@@ -49,5 +70,39 @@ public class RecipeViewHolder extends RecyclerView.ViewHolder {
 
         if (listener != null)
             itemView.setOnClickListener(v -> listener.onItemClick(recipe));
+
+        initialiseImageView(recipe);
+    }
+
+    private void initialiseImageView(Recipe recipe) {
+
+        if (imageView == null)
+            return;
+
+        if (!TextUtils.isEmpty(recipe.thumbnailUrl)) {
+            imageView.setVisibility(View.GONE);
+        } else {
+            imageView.setVisibility(View.VISIBLE);
+            requestManager
+                    .load(recipe.thumbnailUrl)
+                    .listener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model,
+                                                    Target<Drawable> target, boolean isFirstResource) {
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable>
+                                target, DataSource dataSource, boolean isFirstResource) {
+                            return false;
+                        }
+                    })
+                    .into(imageView);
+        }
+    }
+
+    private String getLogTag() {
+        return "RecipeViewHolder";
     }
 }
