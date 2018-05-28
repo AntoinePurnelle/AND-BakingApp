@@ -31,6 +31,7 @@ public class Step implements Parcelable {
     public static final String SHORT_DESCRIPTION_KEY = "shortDescription";
     public static final String DESCRIPTION_KEY = "description";
     public static final String VIDEO_URL_KEY = "videoURL";
+    public static final String THUMBNAIL_URL_KEY = "thumbnailURL";
 
 
     @PrimaryKey(autoincrement = true)
@@ -47,6 +48,9 @@ public class Step implements Parcelable {
     @Column
     @SerializedName(VIDEO_URL_KEY)
     public String videoUrl;
+    @Column
+    @SerializedName(THUMBNAIL_URL_KEY)
+    public String thumbnailUrl;
 
     @ForeignKey(stubbedRelationship = true)
     public Recipe recipe;
@@ -59,6 +63,7 @@ public class Step implements Parcelable {
         shortDescription = in.readString();
         description = in.readString();
         videoUrl = in.readString();
+        thumbnailUrl = in.readString();
     }
 
     @Override
@@ -72,6 +77,7 @@ public class Step implements Parcelable {
         dest.writeString(shortDescription);
         dest.writeString(description);
         dest.writeString(videoUrl);
+        dest.writeString(thumbnailUrl);
     }
 
     @SuppressWarnings("unused")

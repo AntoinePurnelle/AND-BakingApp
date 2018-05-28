@@ -17,6 +17,7 @@
 package net.ouftech.bakingapp;
 
 import android.app.Activity;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -28,6 +29,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
+
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
@@ -43,8 +51,12 @@ import com.hannesdorfmann.fragmentargs.annotation.FragmentWithArgs;
 
 import net.ouftech.bakingapp.commons.BaseFragment;
 import net.ouftech.bakingapp.commons.CollectionUtils;
+import net.ouftech.bakingapp.commons.Logger;
 import net.ouftech.bakingapp.model.Recipe;
 import net.ouftech.bakingapp.model.Step;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -83,6 +95,8 @@ public class StepDetailFragment extends BaseFragment {
 
     @BindView(R.id.step_details_player_view)
     SimpleExoPlayerView playerView;
+    @BindView(R.id.step_details_image_view)
+    AppCompatImageView imageView;
     @Nullable
     @BindView(R.id.step_details_description_tv)
     TextView descriptionTV;
@@ -99,6 +113,8 @@ public class StepDetailFragment extends BaseFragment {
     Recipe recipe;
     @Arg
     int stepNumber;
+
+    private RequestManager requestManager;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -122,12 +138,18 @@ public class StepDetailFragment extends BaseFragment {
             if (activity != null && activity.getActionBar() != null)
                 activity.getActionBar().setTitle(getStep().shortDescription);
         }
+
+        this.requestManager = Glide.with(this);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
+
+        if (rootView == null)
+            return null;
+
         unbinder = ButterKnife.bind(this, rootView);
 
         initView();
@@ -146,6 +168,7 @@ public class StepDetailFragment extends BaseFragment {
             nextButton.setVisibility(stepNumber >= CollectionUtils.getSize(recipe.steps) - 1 ? View.GONE : View.VISIBLE);
 
         initializePlayer();
+        initialiseImageView();
 
     }
 
@@ -180,6 +203,44 @@ public class StepDetailFragment extends BaseFragment {
             exoPlayer.prepare(mediaSource);
             exoPlayer.setPlayWhenReady(true);
 
+        }
+    }
+
+    private void initialiseImageView() {
+
+        Step step = getStep();
+
+        if (getActivity() == null || step == null)
+            return;
+
+        if (TextUtils.isEmpty(step.thumbnailUrl)) {
+            imageView.setVisibility(View.GONE);
+        } else {
+            imageView.setVisibility(View.VISIBLE);
+            URL url;
+            try {
+                url = new URL(step.thumbnailUrl);
+                String imageURL = url.toString();
+                requestManager
+                        .load(imageURL)
+                        .listener(new RequestListener<Drawable>() {
+                            @Override
+                            public boolean onLoadFailed(@Nullable GlideException e, Object model,
+                                                        Target<Drawable> target, boolean isFirstResource) {
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable>
+                                    target, DataSource dataSource, boolean isFirstResource) {
+                                return false;
+                            }
+                        })
+                        .into(imageView);
+            } catch (MalformedURLException e) {
+                Logger.w(getLotTag(), "Error while parsing URL", e);
+                imageView.setVisibility(View.GONE);
+            }
         }
     }
 
