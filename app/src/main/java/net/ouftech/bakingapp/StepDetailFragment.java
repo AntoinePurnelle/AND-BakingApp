@@ -36,6 +36,7 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
@@ -63,6 +64,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Optional;
 import butterknife.Unbinder;
+import icepick.State;
 
 /**
  * A fragment representing a single Step detail screen.
@@ -95,6 +97,7 @@ public class StepDetailFragment extends BaseFragment {
 
     @BindView(R.id.step_details_player_view)
     SimpleExoPlayerView playerView;
+    @Nullable
     @BindView(R.id.step_details_image_view)
     AppCompatImageView imageView;
     @Nullable
@@ -115,6 +118,13 @@ public class StepDetailFragment extends BaseFragment {
     int stepNumber;
 
     private RequestManager requestManager;
+
+    @State
+    boolean startAutoPlay = true;
+    @State
+    int startWindow;
+    @State
+    long startPosition;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -138,6 +148,9 @@ public class StepDetailFragment extends BaseFragment {
             if (activity != null && activity.getActionBar() != null)
                 activity.getActionBar().setTitle(getStep().shortDescription);
         }
+
+        if (savedInstanceState == null)
+            clearStartPosition();
 
         this.requestManager = Glide.with(this);
     }
@@ -186,6 +199,8 @@ public class StepDetailFragment extends BaseFragment {
                 exoPlayer.stop();
                 exoPlayer.release();
             }
+
+            clearStartPosition();
         } else {
             playerView.setVisibility(View.VISIBLE);
 
@@ -193,16 +208,21 @@ public class StepDetailFragment extends BaseFragment {
                 // Create an instance of the ExoPlayer.
                 TrackSelector trackSelector = new DefaultTrackSelector();
                 exoPlayer = ExoPlayerFactory.newSimpleInstance(getActivity(), trackSelector);
-                playerView.setPlayer(exoPlayer);
             }
+
+            exoPlayer.setPlayWhenReady(startAutoPlay);
+
+            playerView.setPlayer(exoPlayer);
 
             // Prepare the MediaSource.
             String userAgent = Util.getUserAgent(getActivity(), "BakingApp");
             MediaSource mediaSource = new ExtractorMediaSource(Uri.parse(step.videoUrl), new DefaultDataSourceFactory(
                     getActivity(), userAgent), new DefaultExtractorsFactory(), null, null);
-            exoPlayer.prepare(mediaSource);
-            exoPlayer.setPlayWhenReady(true);
-
+            boolean hasStartPosition = startWindow != C.INDEX_UNSET;
+            if (hasStartPosition) {
+                exoPlayer.seekTo(startWindow, startPosition);
+            }
+            exoPlayer.prepare(mediaSource, !hasStartPosition, false);
         }
     }
 
@@ -210,7 +230,7 @@ public class StepDetailFragment extends BaseFragment {
 
         Step step = getStep();
 
-        if (getActivity() == null || step == null)
+        if (getActivity() == null || step == null || imageView == null)
             return;
 
         if (TextUtils.isEmpty(step.thumbnailUrl)) {
@@ -249,19 +269,31 @@ public class StepDetailFragment extends BaseFragment {
      */
     private void releasePlayer() {
         if (exoPlayer != null) {
+            updateStartPosition();
             exoPlayer.stop();
             exoPlayer.release();
             exoPlayer = null;
         }
     }
 
-    /**
-     * Release the player when the activity is destroyed.
-     */
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onPause() {
+        super.onPause();
+        updateStartPosition();
         releasePlayer();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (startWindow != C.INDEX_UNSET)
+            initializePlayer();
     }
 
     @Override
@@ -290,6 +322,8 @@ public class StepDetailFragment extends BaseFragment {
         stepNumber--;
         if (getArguments() != null)
             getArguments().putInt(ARG_STEP_NUMBER, stepNumber);
+
+        clearStartPosition();
         initView();
     }
 
@@ -302,6 +336,22 @@ public class StepDetailFragment extends BaseFragment {
         stepNumber++;
         if (getArguments() != null)
             getArguments().putInt(ARG_STEP_NUMBER, stepNumber);
+
+        clearStartPosition();
         initView();
+    }
+
+    private void updateStartPosition() {
+        if (exoPlayer != null) {
+            startAutoPlay = exoPlayer.getPlayWhenReady();
+            startWindow = exoPlayer.getCurrentWindowIndex();
+            startPosition = Math.max(0, exoPlayer.getContentPosition());
+        }
+    }
+
+    private void clearStartPosition() {
+        startAutoPlay = true;
+        startWindow = C.INDEX_UNSET;
+        startPosition = C.TIME_UNSET;
     }
 }
